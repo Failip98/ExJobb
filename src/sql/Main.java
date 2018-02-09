@@ -6,5 +6,6 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		MySQLAccess db = new MySQLAccess();
 		db.readDataBase();
+		System.out.println("hej");
 	}
 } 

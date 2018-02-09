@@ -53,8 +53,8 @@ public class FirstPage extends JFrame {
 		btnNyOder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				NyOderPage s = new NyOderPage();
-				s.setVisible(true);
+				NyOderPage p = new NyOderPage();
+				p.setVisible(true);
 			}
 		});
 		btnNyOder.setBounds(170, 70, 120, 23);
