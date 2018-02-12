@@ -9,6 +9,11 @@ import java.sql.Statement;
 import java.util.Date;
 
 import javax.swing.JList;
+import javax.swing.DefaultListModel;
+
+
+
+
 
 public class MySQLAccess {
 	private Connection connect = null;
@@ -16,27 +21,25 @@ public class MySQLAccess {
 	private ResultSet resultSet = null;
 	private PreparedStatement preparedStatement = null;
 	
-	public void readDataBase() throws Exception {
+	public void readDataBase() {
 		try {
-			connect = DriverManager.getConnection("jdbc:mysql://localhost/exjobb?user=root&password=");
+			connect = DriverManager.getConnection("jdbc:mysql://localhost/exjobb?user=root&password=1234");
 			
 			statement = connect.createStatement();
-		
 			
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			close();
+		}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	
-	}
-	
-	public boolean NyKund(String NyKund, String NyNR)
+	public boolean NyKund(String NyKund, int kundnr)
 	{
 		try
 		{			
 			preparedStatement = connect.prepareStatement("insert into exjobb.kundlista values (?, ?)");
-			preparedStatement.setString(1, NyNR);
+			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, NyKund);
 			preparedStatement.executeUpdate();
 			
@@ -53,6 +56,31 @@ public class MySQLAccess {
 		return true;
 	}
 	
+	
+	public boolean Procent(int kundnr, int mo, int lo, int affo, int vinst)
+	{
+		try
+		{			
+			preparedStatement = connect.prepareStatement("insert into exjobb.prosentlista values (?,?,?,?,?)");
+			preparedStatement.setInt(1, kundnr);
+			preparedStatement.setInt(2, mo);
+			preparedStatement.setInt(3, lo);
+			preparedStatement.setInt(4, affo);
+			preparedStatement.setInt(5, vinst);
+			preparedStatement.executeUpdate();
+			
+		}
+		catch (SQLException e)
+		{
+			if (e.getErrorCode() == 1062)
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		return true;
+	}
 	
 	
 	

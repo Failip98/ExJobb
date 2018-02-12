@@ -26,6 +26,27 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.ClosedFileSystemException;
+import java.util.Iterator;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+
 public class NyKundPage extends JFrame {
 
 	private JPanel contentPane;
@@ -45,8 +66,8 @@ public class NyKundPage extends JFrame {
 	JList listNRT;
 	JList listTjanst;
 	JList listPrisTid;
-	
 	MySQLAccess db = new MySQLAccess();
+	private JTextField textExcel;
 
 	public static void main(String[] args)
 	{
@@ -103,6 +124,8 @@ public class NyKundPage extends JFrame {
 		label();
 		butoms();
 		lists(MaskinPanel,TjänstPanel);
+		
+		
 		
 	}
 	private void label()
@@ -188,23 +211,48 @@ public class NyKundPage extends JFrame {
 		textFieldVinst.setBounds(608, 104, 86, 20);
 		contentPane.add(textFieldVinst);
 		textFieldVinst.setColumns(10);
+		
+		textExcel = new JTextField();
+		textExcel.setBounds(608, 308, 86, 20);
+		contentPane.add(textExcel);
+		textExcel.setColumns(10);
 	}
 
 	private void butoms() 
 	{
 		JButton btnSpara = new JButton("Spara");
 		btnSpara.addMouseListener(new MouseAdapter() {
-			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				Spara();
+				dispose();
+				FirstPage p = new FirstPage();
+				p.setVisible(true);
 			}
 		});
-		btnSpara.setBounds(605, 407, 89, 23);
+		btnSpara.setBounds(608, 407, 89, 23);
 		contentPane.add(btnSpara);	
 		
 		JButton btnImport = new JButton("Import");
-		btnImport.setBounds(605, 373, 89, 23);
+		btnImport.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String Excel = textExcel.getText();
+				test(Excel);
+			}
+		});
+		btnImport.setBounds(608, 339, 89, 23);
 		contentPane.add(btnImport);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+				FirstPage p = new FirstPage();
+				p.setVisible(true);
+			}
+		});
+		btnBack.setBounds(608, 373, 89, 23);
+		contentPane.add(btnBack);
 	}
 
 	private void lists(JPanel MaskinPanel,JPanel TjänstPanel)
@@ -232,18 +280,72 @@ public class NyKundPage extends JFrame {
 	{
 		String KundNamn = textKundNamn.getText();
 		String KundNR = textKundNr.getText();
-		db.NyKund(KundNamn, KundNR);
-		System.out.println(KundNR);
-		
+		int kundnr = Integer.parseInt(KundNR);
+		db.NyKund(KundNamn, kundnr);
 		String MO = textFieldMO.getText();
 		String LO = textFieldLO.getText();
 		String Affo = textFieldAffo.getText();
 		String Vinst= textFieldAffo.getText();
+		int mo = Integer.parseInt(MO);
+		int lo = Integer.parseInt(LO);
+		int affo = Integer.parseInt(Affo);
+		int vinst = Integer.parseInt(Vinst);
+		db.Procent(kundnr, mo, lo, affo, vinst);
+		
 	}
 
+	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel) 
+	{
+		try {
+			FileInputStream file = new FileInputStream(new File("C:\\Users\\TBTE4HP12\\Documents\\" + Excel + ".xlsx"));
+			
+			//Get the workbook instance for XLS file 
+			XSSFWorkbook workbook = new XSSFWorkbook(file);
+			
+			//Get first sheet from the workbook
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			
+			//Iterate through each rows from first sheet
+			Iterator<Row> rowIterator = sheet.iterator();
+			while(rowIterator.hasNext())
+			{
+				Row row = rowIterator.next();
+				//For each row, iterate through each columns
+				Iterator<Cell> cellIterator = row.cellIterator();
+				while(cellIterator.hasNext()) 
+				{
+					Cell cell = cellIterator.next();	
+					switch(cell.getCellType()) 
+					{
+						case Cell.CELL_TYPE_BOOLEAN:
+							System.out.print(cell.getBooleanCellValue() + "\t\t");
+							MNR = listNRM.getSelectedValue().toString();
+							break;
+						case Cell.CELL_TYPE_NUMERIC:
+							System.out.print(cell.getNumericCellValue() + "\t\t");
+							break;
+						case Cell.CELL_TYPE_STRING:
+							System.out.print(cell.getStringCellValue() + "\t\t");
+							break;
+					}
+				}
+				System.out.println("");
+				
+			}
+			file.close();
+			workbook.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 
+	}
 }
-
 
 
 
