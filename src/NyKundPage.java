@@ -23,10 +23,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JSplitPane;
 import java.awt.GridLayout;
+import java.awt.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
+import javax.swing.DefaultListModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,7 +38,10 @@ import java.nio.file.ClosedFileSystemException;
 import java.util.Iterator;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -66,7 +71,7 @@ public class NyKundPage extends JFrame {
 	JList listNRT;
 	JList listTjanst;
 	JList listPrisTid;
-	MySQLAccess db = new MySQLAccess();
+	static MySQLAccess db = new MySQLAccess();
 	private JTextField textExcel;
 
 	public static void main(String[] args)
@@ -122,11 +127,9 @@ public class NyKundPage extends JFrame {
 		
 		textfelds();
 		label();
-		butoms();
-		lists(MaskinPanel,TjänstPanel);
-		
-		
-		
+		butoms(MaskinPanel,TjänstPanel);
+		maskinpanellists(MaskinPanel);
+		tjänstpanellists(TjänstPanel);
 	}
 	private void label()
 	{
@@ -218,7 +221,7 @@ public class NyKundPage extends JFrame {
 		textExcel.setColumns(10);
 	}
 
-	private void butoms() 
+	private void butoms(JPanel MaskinPanel, JPanel TjänstPanel) 
 	{
 		JButton btnSpara = new JButton("Spara");
 		btnSpara.addMouseListener(new MouseAdapter() {
@@ -237,7 +240,8 @@ public class NyKundPage extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				String Excel = textExcel.getText();
-				test(Excel);
+				listNRM.getSelectedValue();
+				test(Excel,MaskinPanel,TjänstPanel,textKundNr);//,listNRM
 			}
 		});
 		btnImport.setBounds(608, 339, 89, 23);
@@ -253,27 +257,6 @@ public class NyKundPage extends JFrame {
 		});
 		btnBack.setBounds(608, 373, 89, 23);
 		contentPane.add(btnBack);
-	}
-
-	private void lists(JPanel MaskinPanel,JPanel TjänstPanel)
-	{
-		JList listNRM = new JList();
-		MaskinPanel.add(listNRM);
-		
-		JList listMaskin = new JList();
-		MaskinPanel.add(listMaskin);
-		
-		JList listPris = new JList();
-		MaskinPanel.add(listPris);
-	
-		JList listNRT = new JList();
-		TjänstPanel.add(listNRT);
-		
-		JList listTjanst = new JList();
-		TjänstPanel.add(listTjanst);
-		
-		JList listPrisTid = new JList();
-		TjänstPanel.add(listPrisTid);
 	}
 
 	private void Spara()
@@ -294,57 +277,87 @@ public class NyKundPage extends JFrame {
 		
 	}
 
-	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel) 
+	private void maskinpanellists(JPanel MaskinPanel)
+	{
+		listNRM = new JList();
+		MaskinPanel.add(listNRM);
+		
+		listMaskin = new JList();
+		MaskinPanel.add(listMaskin);
+		
+		listPris = new JList();
+		MaskinPanel.add(listPris);
+	}
+	
+	private void tjänstpanellists(JPanel TjänstPanel)
+	{
+		listNRT = new JList();
+		TjänstPanel.add(listNRT);
+		
+		listTjanst = new JList();
+		TjänstPanel.add(listTjanst);
+		
+		listPrisTid = new JList();
+		TjänstPanel.add(listPrisTid);
+	}
+	
+	private void cleanLists()
+	{
+		DefaultListModel emptyList = new DefaultListModel();
+		listNRM.setModel(emptyList);
+		listMaskin.setModel(emptyList);
+		listPris.setModel(emptyList);
+		listNRT.setModel(emptyList);
+		listTjanst.setModel(emptyList);
+		listPrisTid.setModel(emptyList);
+	}
+	
+	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel,JTextField textKundNr )//JList listNRM 
 	{
 		try {
-			FileInputStream file = new FileInputStream(new File("C:\\Users\\TBTE4HP12\\Documents\\" + Excel + ".xlsx"));
-			
-			//Get the workbook instance for XLS file 
-			XSSFWorkbook workbook = new XSSFWorkbook(file);
-			
-			//Get first sheet from the workbook
-			XSSFSheet sheet = workbook.getSheetAt(0);
-			
-			//Iterate through each rows from first sheet
-			Iterator<Row> rowIterator = sheet.iterator();
-			while(rowIterator.hasNext())
-			{
-				Row row = rowIterator.next();
-				//For each row, iterate through each columns
-				Iterator<Cell> cellIterator = row.cellIterator();
-				while(cellIterator.hasNext()) 
-				{
-					Cell cell = cellIterator.next();	
-					switch(cell.getCellType()) 
-					{
-						case Cell.CELL_TYPE_BOOLEAN:
-							System.out.print(cell.getBooleanCellValue() + "\t\t");
-							MNR = listNRM.getSelectedValue().toString();
-							break;
-						case Cell.CELL_TYPE_NUMERIC:
-							System.out.print(cell.getNumericCellValue() + "\t\t");
-							break;
-						case Cell.CELL_TYPE_STRING:
-							System.out.print(cell.getStringCellValue() + "\t\t");
-							break;
-					}
-				}
-				System.out.println("");
-				
-			}
-			file.close();
-			workbook.close();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			e.printStackTrace();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
 
-	}
+            FileInputStream excelFile = new FileInputStream(new File("C:\\Users\\TBTE4HP12\\Documents\\" + Excel + ".xlsx"));
+            Workbook workbook = new XSSFWorkbook(excelFile);
+            Sheet datatypeSheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = datatypeSheet.iterator();
+            
+         
+            
+            while (iterator.hasNext())
+            {
+
+                Row currentRow = iterator.next();
+                Iterator<Cell> cellIterator = currentRow.iterator();
+
+                while (cellIterator.hasNext()) 
+                {
+
+                    Cell currentCell = cellIterator.next(); // curent cell utput string.
+                    if (currentCell.getCellTypeEnum() == CellType.STRING) 
+                    {
+                        System.out.print(currentCell.getStringCellValue() + "\t");
+                        //String[] myStringArray = {currentCell.getStringCellValue()};
+                        //System.out.println(myStringArray);
+                        
+                        
+                    }
+                    else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) 
+                    {
+                        System.out.print(currentCell.getNumericCellValue() + "\t");    
+                    }
+
+                }
+                System.out.println();
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+	
 }
 
 

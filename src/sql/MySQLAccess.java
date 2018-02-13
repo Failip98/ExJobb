@@ -9,6 +9,9 @@ import java.sql.Statement;
 import java.util.Date;
 
 import javax.swing.JList;
+
+import org.apache.poi.ss.usermodel.Cell;
+
 import javax.swing.DefaultListModel;
 
 
@@ -82,8 +85,8 @@ public class MySQLAccess {
 		return true;
 	}
 	
-	
-	
+
+
 	
 	private void close() {
 		try {
