@@ -49,6 +49,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 
@@ -72,7 +74,10 @@ public class NyKundPage extends JFrame {
 	JList listTjanst;
 	JList listPrisTid;
 	static MySQLAccess db = new MySQLAccess();
-	private JTextField textExcel;
+	public JTextField textExcel;
+	private JTextField textMaskinTjenstNr;
+	private JTextField textMaskinTjenst;
+	private JTextField textPrisTime;
 
 	public static void main(String[] args)
 	{
@@ -111,6 +116,11 @@ public class NyKundPage extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 720, 480);
 		contentPane = new JPanel();
+		contentPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			}
+		});
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -130,6 +140,15 @@ public class NyKundPage extends JFrame {
 		butoms(MaskinPanel,TjänstPanel);
 		maskinpanellists(MaskinPanel);
 		tjänstpanellists(TjänstPanel);
+		
+		JButton btnhemta = new JButton("H\u00E4mta");
+		btnhemta.setBounds(176, 41, 89, 23);
+		contentPane.add(btnhemta);
+		
+		
+		
+		
+		
 	}
 	private void label()
 	{
@@ -180,6 +199,18 @@ public class NyKundPage extends JFrame {
 		JLabel lblKundNr = new JLabel("Kund Nr");
 		lblKundNr.setBounds(10, 45, 60, 14);
 		contentPane.add(lblKundNr);	
+		
+		JLabel lbllegtillNr = new JLabel("Nr");
+		lbllegtillNr.setBounds(540, 138, 46, 14);
+		contentPane.add(lbllegtillNr);
+		
+		JLabel lbllegtillMaskintjenst = new JLabel("Maskin/Tj\u00E4nst");
+		lbllegtillMaskintjenst.setBounds(540, 169, 46, 14);
+		contentPane.add(lbllegtillMaskintjenst);
+		
+		JLabel lbllagtillpris = new JLabel("Pris/Time");
+		lbllagtillpris.setBounds(540, 200, 46, 14);
+		contentPane.add(lbllagtillpris);
 	}
 	
 	private void textfelds()
@@ -219,6 +250,22 @@ public class NyKundPage extends JFrame {
 		textExcel.setBounds(608, 308, 86, 20);
 		contentPane.add(textExcel);
 		textExcel.setColumns(10);
+		
+		textMaskinTjenstNr = new JTextField();
+		textMaskinTjenstNr.setBounds(608, 135, 86, 20);
+		contentPane.add(textMaskinTjenstNr);
+		textMaskinTjenstNr.setColumns(10);
+		
+		textMaskinTjenst = new JTextField();
+		textMaskinTjenst.setBounds(608, 166, 86, 20);
+		contentPane.add(textMaskinTjenst);
+		textMaskinTjenst.setColumns(10);
+		
+		textPrisTime = new JTextField();
+		textPrisTime.setBounds(608, 197, 86, 20);
+		contentPane.add(textPrisTime);
+		textPrisTime.setColumns(10);
+		
 	}
 
 	private void butoms(JPanel MaskinPanel, JPanel TjänstPanel) 
@@ -250,15 +297,33 @@ public class NyKundPage extends JFrame {
 		JButton btnBack = new JButton("Back");
 		btnBack.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				dispose();
-				FirstPage p = new FirstPage();
-				p.setVisible(true);
+				//dispose();
+				//FirstPage p = new FirstPage();
+				//p.setVisible(true);
+				System.out.println("hej");
 			}
 		});
 		btnBack.setBounds(608, 373, 89, 23);
 		contentPane.add(btnBack);
+		
+		JButton btnNyMaskin = new JButton("Ny Maskin");
+		btnNyMaskin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				nymaskin();
+			}
+		});
+		btnNyMaskin.setBounds(605, 228, 89, 23);
+		contentPane.add(btnNyMaskin);
+		
+		JButton btnNewButton_1 = new JButton("Ny Tj\u00E4nst");
+		btnNewButton_1.setBounds(605, 262, 89, 23);
+		contentPane.add(btnNewButton_1);
+		
+		
 	}
 
+	
 	private void Spara()
 	{
 		String KundNamn = textKundNamn.getText();
@@ -300,16 +365,39 @@ public class NyKundPage extends JFrame {
 		listPrisTid = new JList();
 		TjänstPanel.add(listPrisTid);
 	}
-	
-	private void cleanLists()
+
+	private void filupmasiknlist()
 	{
-		DefaultListModel emptyList = new DefaultListModel();
-		listNRM.setModel(emptyList);
-		listMaskin.setModel(emptyList);
-		listPris.setModel(emptyList);
-		listNRT.setModel(emptyList);
-		listTjanst.setModel(emptyList);
-		listPrisTid.setModel(emptyList);
+		
+	}
+	
+	private void cleanText()
+	{
+		textMaskinTjenstNr.setText(null);
+		textMaskinTjenst.setText(null);
+		textPrisTime.setText(null);
+	}
+	
+	private void hemtaprosent()
+	{
+		String KundNR = textKundNr.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		db.getprosent(textFieldMO,textFieldLO,textFieldAffo,textFieldVinst,kundnr);
+		
+		
+	}
+	
+	private void nymaskin()
+	{
+		String KundNR = textKundNr.getText();
+		String NR = textMaskinTjenstNr.getText();
+		String MaskinTjenst = textMaskinTjenst.getText();
+		String PrisTime = textPrisTime.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		int nr = Integer.parseInt(NR);
+		int pristime = Integer.parseInt(PrisTime);
+		db.nymaskin(kundnr,nr,MaskinTjenst,pristime);
+		cleanText();
 	}
 	
 	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel,JTextField textKundNr )//JList listNRM 
@@ -320,8 +408,6 @@ public class NyKundPage extends JFrame {
             Workbook workbook = new XSSFWorkbook(excelFile);
             Sheet datatypeSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = datatypeSheet.iterator();
-            
-         
             
             while (iterator.hasNext())
             {
@@ -338,8 +424,7 @@ public class NyKundPage extends JFrame {
                         System.out.print(currentCell.getStringCellValue() + "\t");
                         //String[] myStringArray = {currentCell.getStringCellValue()};
                         //System.out.println(myStringArray);
-                        
-                        
+                        //String ert = currentCell.getStringCellValue();
                     }
                     else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) 
                     {
@@ -357,7 +442,6 @@ public class NyKundPage extends JFrame {
         }
 
     }
-	
 }
 
 
