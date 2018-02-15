@@ -51,6 +51,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 
 
@@ -78,7 +80,9 @@ public class NyKundPage extends JFrame {
 	private JTextField textMaskinTjenstNr;
 	private JTextField textMaskinTjenst;
 	private JTextField textPrisTime;
-
+	
+	int listselecter = 1;
+	
 	public static void main(String[] args)
 	{
 		EventQueue.invokeLater(new Runnable()
@@ -114,13 +118,9 @@ public class NyKundPage extends JFrame {
 	private void initialize() 
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 720, 480);
+		setBounds(50, 50, 820, 600);
 		contentPane = new JPanel();
-		contentPane.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-			}
-		});
+		
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -141,31 +141,23 @@ public class NyKundPage extends JFrame {
 		maskinpanellists(MaskinPanel);
 		tjänstpanellists(TjänstPanel);
 		
-		JButton btnhemta = new JButton("H\u00E4mta");
-		btnhemta.setBounds(176, 41, 89, 23);
-		contentPane.add(btnhemta);
-		
-		
-		
-		
-		
 	}
 	private void label()
 	{
 		JLabel lblMO = new JLabel("MO");
-		lblMO.setBounds(552, 14, 46, 14);
+		lblMO.setBounds(652, 14, 46, 14);
 		contentPane.add(lblMO);
 		
 		JLabel lblLO = new JLabel("LO");
-		lblLO.setBounds(552, 45, 46, 14);
+		lblLO.setBounds(652, 45, 46, 14);
 		contentPane.add(lblLO);
 		
 		JLabel lblAffo = new JLabel("Affo");
-		lblAffo.setBounds(552, 76, 46, 14);
+		lblAffo.setBounds(652, 76, 46, 14);
 		contentPane.add(lblAffo);
 		
 		JLabel lblVinst = new JLabel("Vinst");
-		lblVinst.setBounds(552, 107, 46, 14);
+		lblVinst.setBounds(652, 107, 46, 14);
 		contentPane.add(lblVinst);
 		
 		JLabel lblNRM = new JLabel("NR");
@@ -201,15 +193,15 @@ public class NyKundPage extends JFrame {
 		contentPane.add(lblKundNr);	
 		
 		JLabel lbllegtillNr = new JLabel("Nr");
-		lbllegtillNr.setBounds(540, 138, 46, 14);
+		lbllegtillNr.setBounds(648, 138, 46, 14);
 		contentPane.add(lbllegtillNr);
 		
 		JLabel lbllegtillMaskintjenst = new JLabel("Maskin/Tj\u00E4nst");
-		lbllegtillMaskintjenst.setBounds(540, 169, 46, 14);
+		lbllegtillMaskintjenst.setBounds(648, 166, 70, 14);
 		contentPane.add(lbllegtillMaskintjenst);
 		
 		JLabel lbllagtillpris = new JLabel("Pris/Time");
-		lbllagtillpris.setBounds(540, 200, 46, 14);
+		lbllagtillpris.setBounds(648, 200, 46, 14);
 		contentPane.add(lbllagtillpris);
 	}
 	
@@ -227,42 +219,42 @@ public class NyKundPage extends JFrame {
 		textKundNr.setColumns(10);
 		
 		textFieldMO = new JTextField();
-		textFieldMO.setBounds(608, 11, 86, 20);
+		textFieldMO.setBounds(718, 11, 76, 20);
 		contentPane.add(textFieldMO);
 		textFieldMO.setColumns(10);
 		
 		textFieldLO = new JTextField();
-		textFieldLO.setBounds(608, 42, 86, 20);
+		textFieldLO.setBounds(718, 42, 76, 20);
 		contentPane.add(textFieldLO);
 		textFieldLO.setColumns(10);
 		
 		textFieldAffo = new JTextField();
-		textFieldAffo.setBounds(608, 73, 86, 20);
+		textFieldAffo.setBounds(718, 73, 76, 20);
 		contentPane.add(textFieldAffo);
 		textFieldAffo.setColumns(10);
 		
 		textFieldVinst = new JTextField();
-		textFieldVinst.setBounds(608, 104, 86, 20);
+		textFieldVinst.setBounds(718, 104, 76, 20);
 		contentPane.add(textFieldVinst);
 		textFieldVinst.setColumns(10);
 		
 		textExcel = new JTextField();
-		textExcel.setBounds(608, 308, 86, 20);
+		textExcel.setBounds(608, 462, 86, 20);
 		contentPane.add(textExcel);
 		textExcel.setColumns(10);
 		
 		textMaskinTjenstNr = new JTextField();
-		textMaskinTjenstNr.setBounds(608, 135, 86, 20);
+		textMaskinTjenstNr.setBounds(718, 135, 76, 20);
 		contentPane.add(textMaskinTjenstNr);
 		textMaskinTjenstNr.setColumns(10);
 		
 		textMaskinTjenst = new JTextField();
-		textMaskinTjenst.setBounds(608, 166, 86, 20);
+		textMaskinTjenst.setBounds(718, 166, 76, 20);
 		contentPane.add(textMaskinTjenst);
 		textMaskinTjenst.setColumns(10);
 		
 		textPrisTime = new JTextField();
-		textPrisTime.setBounds(608, 197, 86, 20);
+		textPrisTime.setBounds(718, 197, 76, 20);
 		contentPane.add(textPrisTime);
 		textPrisTime.setColumns(10);
 		
@@ -279,7 +271,7 @@ public class NyKundPage extends JFrame {
 				p.setVisible(true);
 			}
 		});
-		btnSpara.setBounds(608, 407, 89, 23);
+		btnSpara.setBounds(705, 527, 89, 23);
 		contentPane.add(btnSpara);	
 		
 		JButton btnImport = new JButton("Import");
@@ -291,19 +283,19 @@ public class NyKundPage extends JFrame {
 				test(Excel,MaskinPanel,TjänstPanel,textKundNr);//,listNRM
 			}
 		});
-		btnImport.setBounds(608, 339, 89, 23);
+		btnImport.setBounds(605, 493, 89, 23);
 		contentPane.add(btnImport);
 		
 		JButton btnBack = new JButton("Back");
 		btnBack.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				//dispose();
-				//FirstPage p = new FirstPage();
-				//p.setVisible(true);
-				System.out.println("hej");
+				dispose();
+				FirstPage p = new FirstPage();
+				p.setVisible(true);
+				
 			}
 		});
-		btnBack.setBounds(608, 373, 89, 23);
+		btnBack.setBounds(705, 493, 89, 23);
 		contentPane.add(btnBack);
 		
 		JButton btnNyMaskin = new JButton("Ny Maskin");
@@ -311,19 +303,49 @@ public class NyKundPage extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				nymaskin();
+				cleanText();
 			}
 		});
-		btnNyMaskin.setBounds(605, 228, 89, 23);
+		btnNyMaskin.setBounds(528, 228, 100, 23);
 		contentPane.add(btnNyMaskin);
 		
 		JButton btnNewButton_1 = new JButton("Ny Tj\u00E4nst");
-		btnNewButton_1.setBounds(605, 262, 89, 23);
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				nytjanst();
+				cleanText();
+			}
+		});
+		btnNewButton_1.setBounds(652, 228, 100, 23);
 		contentPane.add(btnNewButton_1);
+		
+		JButton btnhemta = new JButton("H\u00E4mta");
+		btnhemta.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Maskinlist();
+				hemtatjenstlist();
+			}
+		});
+		btnhemta.setBounds(176, 41, 89, 23);
+		contentPane.add(btnhemta);
+		
+		JButton btnTaBort = new JButton("Ta bort");
+		btnTaBort.setBounds(528, 297, 89, 23);
+		contentPane.add(btnTaBort);
+		
+		JButton btnandraMaskin = new JButton("\u00C4ndra Maskin");
+		btnandraMaskin.setBounds(528, 263, 120, 23);
+		contentPane.add(btnandraMaskin);
+		
+		JButton btnandraTjanst = new JButton("\u00C4ndra tj\u00E4nst");
+		btnandraTjanst.setBounds(652, 262, 120, 23);
+		contentPane.add(btnandraTjanst);
+		
 		
 		
 	}
 
-	
 	private void Spara()
 	{
 		String KundNamn = textKundNamn.getText();
@@ -345,30 +367,105 @@ public class NyKundPage extends JFrame {
 	private void maskinpanellists(JPanel MaskinPanel)
 	{
 		listNRM = new JList();
+		listNRM.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				if (listNRM.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljnrm(listselecter);
+				}
+				
+			}
+		});
 		MaskinPanel.add(listNRM);
 		
 		listMaskin = new JList();
+		listMaskin.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (listMaskin.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljmaskin(listselecter);
+				}
+			}
+		});
 		MaskinPanel.add(listMaskin);
 		
 		listPris = new JList();
+		listPris.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				
+				if (listPris.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljpris(listselecter);
+				}
+			}
+		});
 		MaskinPanel.add(listPris);
 	}
 	
 	private void tjänstpanellists(JPanel TjänstPanel)
 	{
 		listNRT = new JList();
+		listNRT.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (listPris.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljnrt(listselecter);
+				}
+			}
+		});
 		TjänstPanel.add(listNRT);
 		
 		listTjanst = new JList();
+		listTjanst.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (listPris.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljtjenst(listselecter);
+				}
+			}
+		});
 		TjänstPanel.add(listTjanst);
 		
 		listPrisTid = new JList();
+		listPrisTid.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if (listPris.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					veljpristid(listselecter);
+				}
+			}
+		});
 		TjänstPanel.add(listPrisTid);
 	}
 
-	private void filupmasiknlist()
+	private void Maskinlist()
 	{
-		
+		hemtamaskinlist();
+		hemtaprosent();
 	}
 	
 	private void cleanText()
@@ -384,7 +481,20 @@ public class NyKundPage extends JFrame {
 		int kundnr = Integer.parseInt(KundNR);
 		db.getprosent(textFieldMO,textFieldLO,textFieldAffo,textFieldVinst,kundnr);
 		
-		
+	}
+	
+	private void hemtamaskinlist()
+	{
+		String KundNR = textKundNr.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		db.Maskinlist(listNRM,listMaskin,listPris,kundnr);
+	}
+	
+	private void hemtatjenstlist()
+	{
+		String KundNR = textKundNr.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		db.Tjanstlista(listNRT, listTjanst, listPrisTid, kundnr);
 	}
 	
 	private void nymaskin()
@@ -395,9 +505,113 @@ public class NyKundPage extends JFrame {
 		String PrisTime = textPrisTime.getText();
 		int kundnr = Integer.parseInt(KundNR);
 		int nr = Integer.parseInt(NR);
+		int pristime = Integer.parseInt(PrisTime);	
+		db.nymaskin(kundnr, nr, MaskinTjenst, pristime);
+		db.Maskinlist(listNRM, listMaskin, listPris, kundnr);
+	}
+	
+	private void nytjanst() 
+	{
+		String KundNR = textKundNr.getText();
+		String NR = textMaskinTjenstNr.getText();
+		String MaskinTjenst = textMaskinTjenst.getText();
+		String PrisTime = textPrisTime.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		int nr = Integer.parseInt(NR);
 		int pristime = Integer.parseInt(PrisTime);
-		db.nymaskin(kundnr,nr,MaskinTjenst,pristime);
-		cleanText();
+		db.nytjanst(kundnr, nr, MaskinTjenst, pristime);
+		db.Tjanstlista(listNRT, listTjanst, listPrisTid, kundnr);
+		
+	}
+	
+	private void veljnrm(int listselecter)
+	{
+		if(listselecter == 1)
+		{
+    		textMaskinTjenstNr.setText(listNRM.getSelectedValue().toString());
+        	listTjanst.setSelectedIndex(listNRM.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listNRM.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listTjanst.setSelectedIndex(listNRM.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listNRM.getSelectedIndex());
+        }
+	}
+
+	private void veljmaskin(int listselecter)
+	{
+		if(listselecter == 1)
+		{
+    		textMaskinTjenst.setText(listMaskin.getSelectedValue().toString());
+        	listNRM.setSelectedIndex(listMaskin.getSelectedIndex());
+        	listPris.setSelectedIndex(listMaskin.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listNRM.setSelectedIndex(listMaskin.getSelectedIndex());
+        	listPris.setSelectedIndex(listMaskin.getSelectedIndex());
+        }
+	}
+	
+	private void veljpris(int listselecter)
+	{
+		if(listselecter == 1)
+		{
+    		textPrisTime.setText(listPris.getSelectedValue().toString());
+        	listNRM.setSelectedIndex(listPris.getSelectedIndex());
+        	listMaskin.setSelectedIndex(listPris.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listNRT.setSelectedIndex(listPris.getSelectedIndex());
+        	listMaskin.setSelectedIndex(listPris.getSelectedIndex());
+        }
+	}
+	
+	private void veljnrt(int listselecter) yyyyyyyyy
+	{
+		if(listselecter == 1)
+		{
+    		textMaskinTjenstNr.setText(listNRT.getSelectedValue().toString());
+        	listTjanst.setSelectedIndex(listNRT.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listNRT.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listTjanst.setSelectedIndex(listNRT.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listNRT.getSelectedIndex());
+        }
+	}
+	
+	private void veljtjenst(int listselecter) yyyyyyyyyyyy
+	{
+		if(listselecter == 1)
+		{
+    		textMaskinTjenst.setText(listTjanst.getSelectedValue().toString());
+        	listNRT.setSelectedIndex(listTjanst.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listTjanst.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listNRT.setSelectedIndex(listTjanst.getSelectedIndex());
+        	listPrisTid.setSelectedIndex(listTjanst.getSelectedIndex());
+        }
+	}
+	
+	private void veljpristid(int listselecter) yyyyyyyyyyyyyy
+	{
+		if(listselecter == 1)
+		{
+    		textPrisTime.setText(listPrisTid.getSelectedValue().toString());
+        	listNRT.setSelectedIndex(listPrisTid.getSelectedIndex());
+        	listTjanst.setSelectedIndex(listPrisTid.getSelectedIndex());
+		}
+        else if(listselecter == 0)
+        {
+        	listNRT.setSelectedIndex(listPrisTid.getSelectedIndex());
+        	listTjanst.setSelectedIndex(listPrisTid.getSelectedIndex());
+        }
 	}
 	
 	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel,JTextField textKundNr )//JList listNRM 

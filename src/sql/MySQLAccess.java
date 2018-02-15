@@ -91,14 +91,13 @@ public class MySQLAccess {
 	public boolean nymaskin(int kundnr, int nr, String maskin, int pristime)
 	{
 		try
-		{			
+		{	
 			preparedStatement = connect.prepareStatement("insert into exjobb.prislistamaskin values (?,?,?,?)");
 			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setInt(2, nr);
 			preparedStatement.setString(3, maskin);
 			preparedStatement.setInt(4, pristime);
-			preparedStatement.executeUpdate();
-			
+			preparedStatement.executeUpdate();	
 		}
 		catch (SQLException e)
 		{
@@ -111,13 +110,38 @@ public class MySQLAccess {
 		
 		return true;
 	}
-
+	
+	public boolean nytjanst(int kundnr, int nr, String tjanst, int pristime) 
+	{
+		try
+		{	
+			preparedStatement = connect.prepareStatement("insert into exjobb.prislistakonsult values (?,?,?,?)");
+			preparedStatement.setInt(1, kundnr);
+			preparedStatement.setInt(2, nr);
+			preparedStatement.setString(3, tjanst);
+			preparedStatement.setInt(4, pristime);
+			preparedStatement.executeUpdate();	
+		}
+		catch (SQLException e)
+		{
+			if (e.getErrorCode() == 1062)
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 	public void Maskinlist(JList nr, JList maskin,JList pris, int kundnr)
 	{
 		try
 		{
-			resultSet = statement.executeQuery("select NR, Maskin,PrisTime from exjobb.prosentlista where ID=?");
+			preparedStatement = connect.prepareStatement("select NR, Maskin,PrisTime from exjobb.prislistamaskin where ID=?");
 			preparedStatement.setInt(1, kundnr);
+			ResultSet resultSet = preparedStatement.executeQuery();
 			writeMaskinList(resultSet, nr,maskin,pris);
 		}
 		catch (SQLException e)
@@ -126,7 +150,22 @@ public class MySQLAccess {
 		}
 	}
 	
-	private void writeMaskinList(ResultSet resultSet, JList nr, JList maskin , JList pris) throws SQLException {
+	public void Tjanstlista(JList nr, JList tjanst,JList pristime, int kundnr)
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("select NR, Tjänst,PrisTime from exjobb.prislistakonsult where ID=?");
+			preparedStatement.setInt(1, kundnr);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			writeTjanstList(resultSet, nr,tjanst,pristime);
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeMaskinList(ResultSet resultSet, JList nr, JList maskin , JList pris) throws SQLException {
 		DefaultListModel<String> listNRM = new DefaultListModel<String>();
 		DefaultListModel<String> listMaskin = new DefaultListModel<String>();
 		DefaultListModel<String> listPris = new DefaultListModel<String>();
@@ -134,11 +173,11 @@ public class MySQLAccess {
 			
 			String NR = resultSet.getString("NR");
 			String Maskin = resultSet.getString("Maskin");
-			String Pris = resultSet.getString("Pris");
+			String PrisTime = resultSet.getString("PrisTime");
 			
 			listNRM.addElement(NR); 
 			listMaskin.addElement(Maskin);
-			listPris.addElement(Pris);
+			listPris.addElement(PrisTime);
 			
 		}
 		nr.setModel(listNRM);
@@ -147,15 +186,48 @@ public class MySQLAccess {
 		
 	}
 	
+	private void writeTjanstList(ResultSet resultSet, JList nr, JList tjanst, JList pristime)throws SQLException {
+		DefaultListModel<String> listNRT = new DefaultListModel<String>();
+		DefaultListModel<String> listTjanst = new DefaultListModel<String>();
+		DefaultListModel<String> listPrisTid = new DefaultListModel<String>();
+		while (resultSet.next()) {
+			
+			String NR = resultSet.getString("NR");
+			String Tjänst = resultSet.getString("Tjänst");
+			String PrisTime = resultSet.getString("PrisTime");
+			
+			listNRT.addElement(NR); 
+			listTjanst.addElement(Tjänst);
+			listPrisTid.addElement(PrisTime);
+			
+		}
+		nr.setModel(listNRT);
+		tjanst.setModel(listTjanst);
+		pristime.setModel(listPrisTid);
+
+	}
+	
 	public void getprosent(JTextField MO, JTextField LO, JTextField Affo,JTextField Vinst, int kundnr) 
 	{
 		try
 		{
-			resultSet = statement.executeQuery("select mo,lo,affo,vinst from exjobb.prosent where ID=? ");
+			preparedStatement = connect.prepareStatement("select mo,lo,affo,vinst from exjobb.prosentlista where ID=? ");
 			preparedStatement.setInt(1, kundnr);
-			preparedStatement.executeUpdate();
-			String mo = resultSet.getString("MO");
-			MO.setText(mo);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while (resultSet.next()) {
+				
+				String mo = resultSet.getString("MO");
+				String lo = resultSet.getString("LO");
+				String affo = resultSet.getString("Affo");
+				String vinst = resultSet.getString("Vinst"); 
+				
+				MO.setText(mo);
+				LO.setText(lo);
+				Affo.setText(affo);
+				Vinst.setText(vinst);
+				
+			}
 		}
 		catch (SQLException e)
 		{
@@ -165,40 +237,29 @@ public class MySQLAccess {
 	}
 	
 
-	//private void writeProcent(ResultSet resultSet, JTextField MO, JTextField LO,JTextField Affo,JTextField Vinst) throws SQLException {
-		/*
-		while (resultSet.next()) {
-			
-			String mo = resultSet.getString("MO");
-			String lo = resultSet.getString("LO");
-			String affo = resultSet.getString("Affo");
-			String vinst = resultSet.getString("Vinst");
-			
-			MO.setText(mo);
-			LO.setText(lo);
-			Affo.setText(affo);
-			Vinst.setText(vinst);
-			
-		*/
-	//}
-
 	
 	
 	
-	private void close() {
-		try {
-			if (resultSet != null) {
+	private void close() 
+	{
+		try 
+		{
+			if (resultSet != null) 
+			{
 				resultSet.close();
 			}
 
-			if (statement != null) {
+			if (statement != null) 
+			{
 				statement.close();
 			}
 
-			if (connect != null) {
+			if (connect != null)
+			{
 				connect.close();
 			}
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
 		}
 	}
 
