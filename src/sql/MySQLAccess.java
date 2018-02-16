@@ -236,9 +236,88 @@ public class MySQLAccess {
 	
 	}
 	
-
+	public void endramaskin(int kundnr, String maskin, int pris)
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("Update exjobb.prislistamaskin SET Maskin = ?, PrisTime = ? WHERE ID= ?");
+			preparedStatement.setInt(3, kundnr);
+			preparedStatement.setString(1, maskin);
+			preparedStatement.setInt(2, pris);
+			preparedStatement.executeUpdate();
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
+	public void endratjenst(int kundnr, String tjenst, int pris) 
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("Update exjobb.prislistakonsult SET Tjänst = ?, PrisTime = ? WHERE ID= ?");
+			preparedStatement.setInt(3, kundnr);
+			preparedStatement.setString(1, tjenst);
+			preparedStatement.setInt(2, pris);
+			preparedStatement.executeUpdate();
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
+	public void endraprocent(int kundnr, int mo, int lo, int affo, int vinst) {
+		try
+		{
+			preparedStatement = connect.prepareStatement("Update exjobb.prosentlista SET MO = ?, LO = ?, Affo = ?, Vinst = ? WHERE ID= ?");
+			preparedStatement.setInt(5, kundnr);
+			preparedStatement.setInt(1, mo);
+			preparedStatement.setInt(2, lo);
+			preparedStatement.setInt(3, affo);
+			preparedStatement.setInt(4, vinst);
+			preparedStatement.executeUpdate();
+			
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void tabortmaskin(String kundnr, String nr)
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("delete from exjobb.prislistamaskin where ID= ? and NR =?");
+			preparedStatement.setString(1, kundnr);
+			preparedStatement.setString(2, nr);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	public void taborttjenst(String kundnr, String nr)
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("delete from exjobb.prislistakonsult where ID= ? and NR =?");
+			preparedStatement.setString(1, kundnr);
+			preparedStatement.setString(2, nr);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
 	
 	private void close() 
 	{

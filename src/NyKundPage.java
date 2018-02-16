@@ -141,7 +141,10 @@ public class NyKundPage extends JFrame {
 		maskinpanellists(MaskinPanel);
 		tjänstpanellists(TjänstPanel);
 		
+		
+		
 	}
+	
 	private void label()
 	{
 		JLabel lblMO = new JLabel("MO");
@@ -330,19 +333,73 @@ public class NyKundPage extends JFrame {
 		btnhemta.setBounds(176, 41, 89, 23);
 		contentPane.add(btnhemta);
 		
-		JButton btnTaBort = new JButton("Ta bort");
-		btnTaBort.setBounds(528, 297, 89, 23);
-		contentPane.add(btnTaBort);
+		JButton btnTaBortMaskin = new JButton("Ta bort Maskin");
+		btnTaBortMaskin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				String KundNR = textKundNr.getText();
+				String NR = textMaskinTjenstNr.getText();
+				db.tabortmaskin(KundNR, NR);
+				cleanText();
+				hemtamaskinlist();
+			}
+		});
+		btnTaBortMaskin.setBounds(528, 297, 120, 23);
+		contentPane.add(btnTaBortMaskin);
 		
 		JButton btnandraMaskin = new JButton("\u00C4ndra Maskin");
+		btnandraMaskin.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				String KundNR = textKundNr.getText();
+				String Maskin = textMaskinTjenst.getText();
+				String Pris = textPrisTime.getText();
+				int kundnr = Integer.parseInt(KundNR);
+				int pris = Integer.parseInt(Pris);		
+				db.endramaskin(kundnr, Maskin, pris);
+				cleanText();
+				hemtamaskinlist();
+				
+			}
+		});
 		btnandraMaskin.setBounds(528, 263, 120, 23);
 		contentPane.add(btnandraMaskin);
 		
 		JButton btnandraTjanst = new JButton("\u00C4ndra tj\u00E4nst");
+		btnandraTjanst.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				String KundNR = textKundNr.getText();
+				String Tjanst = textMaskinTjenst.getText();
+				String Pris = textPrisTime.getText();
+				int kundnr = Integer.parseInt(KundNR);
+				int pris = Integer.parseInt(Pris);
+				System.out.println(Tjanst);
+				System.out.println(pris);
+				db.endratjenst(kundnr, Tjanst, pris);
+				cleanText();
+				hemtatjenstlist();
+			}
+		});
 		btnandraTjanst.setBounds(652, 262, 120, 23);
 		contentPane.add(btnandraTjanst);
 		
-		
+		JButton btnTaBortTjanst = new JButton("Ta bort tj\u00E4nst");
+		btnTaBortTjanst.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String KundNR = textKundNr.getText();
+				String NR = textMaskinTjenstNr.getText();
+				db.taborttjenst(KundNR,NR);
+				cleanText();
+				hemtatjenstlist();
+			}
+		});
+		btnTaBortTjanst.setBounds(652, 297, 120, 23);
+		contentPane.add(btnTaBortTjanst);
 		
 	}
 
@@ -361,6 +418,7 @@ public class NyKundPage extends JFrame {
 		int affo = Integer.parseInt(Affo);
 		int vinst = Integer.parseInt(Vinst);
 		db.Procent(kundnr, mo, lo, affo, vinst);
+		db.endraprocent(kundnr, mo,lo,affo,vinst);//fel sätt någon annnan stands
 		
 	}
 
@@ -419,7 +477,7 @@ public class NyKundPage extends JFrame {
 		listNRT = new JList();
 		listNRT.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (listPris.getSelectedIndex() == -1)
+				if (listNRT.getSelectedIndex() == -1)
 				{
 			        //inget händer
 				}
@@ -434,7 +492,7 @@ public class NyKundPage extends JFrame {
 		listTjanst = new JList();
 		listTjanst.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (listPris.getSelectedIndex() == -1)
+				if (listTjanst.getSelectedIndex() == -1)
 				{
 			        //inget händer
 				}
@@ -449,7 +507,7 @@ public class NyKundPage extends JFrame {
 		listPrisTid = new JList();
 		listPrisTid.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
-				if (listPris.getSelectedIndex() == -1)
+				if (listPrisTid.getSelectedIndex() == -1)
 				{
 			        //inget händer
 				}
@@ -524,20 +582,23 @@ public class NyKundPage extends JFrame {
 		
 	}
 	
+	
 	private void veljnrm(int listselecter)
 	{
 		if(listselecter == 1)
 		{
     		textMaskinTjenstNr.setText(listNRM.getSelectedValue().toString());
-        	listTjanst.setSelectedIndex(listNRM.getSelectedIndex());
-        	listPrisTid.setSelectedIndex(listNRM.getSelectedIndex());
+        	listMaskin.setSelectedIndex(listNRM.getSelectedIndex());
+        	listPris.setSelectedIndex(listNRM.getSelectedIndex());
 		}
         else if(listselecter == 0)
         {
-        	listTjanst.setSelectedIndex(listNRM.getSelectedIndex());
-        	listPrisTid.setSelectedIndex(listNRM.getSelectedIndex());
+        	listMaskin.setSelectedIndex(listNRM.getSelectedIndex());
+        	listPris.setSelectedIndex(listNRM.getSelectedIndex());
         }
+	
 	}
+
 
 	private void veljmaskin(int listselecter)
 	{
@@ -554,6 +615,7 @@ public class NyKundPage extends JFrame {
         }
 	}
 	
+	
 	private void veljpris(int listselecter)
 	{
 		if(listselecter == 1)
@@ -569,7 +631,8 @@ public class NyKundPage extends JFrame {
         }
 	}
 	
-	private void veljnrt(int listselecter) yyyyyyyyy
+	
+	private void veljnrt(int listselecter) 
 	{
 		if(listselecter == 1)
 		{
@@ -584,7 +647,7 @@ public class NyKundPage extends JFrame {
         }
 	}
 	
-	private void veljtjenst(int listselecter) yyyyyyyyyyyy
+	private void veljtjenst(int listselecter) 
 	{
 		if(listselecter == 1)
 		{
@@ -599,7 +662,7 @@ public class NyKundPage extends JFrame {
         }
 	}
 	
-	private void veljpristid(int listselecter) yyyyyyyyyyyyyy
+	private void veljpristid(int listselecter) 
 	{
 		if(listselecter == 1)
 		{
