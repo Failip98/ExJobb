@@ -19,6 +19,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JSplitPane;
@@ -53,6 +54,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.PopupMenuListener;
+import javax.swing.event.PopupMenuEvent;
 
 
 
@@ -63,7 +66,6 @@ public class NyKundPage extends JFrame {
 	private JTextField textFieldLO;
 	private JTextField textFieldAffo;
 	private JTextField textFieldVinst;
-	private JTextField textKundNamn;
 	private JTextField textKundNr;
 
 	JPanel MaskinPanel;
@@ -75,6 +77,9 @@ public class NyKundPage extends JFrame {
 	JList listNRT;
 	JList listTjanst;
 	JList listPrisTid;
+	
+	JComboBox comboBoxForetag;
+	
 	static MySQLAccess db = new MySQLAccess();
 	public JTextField textExcel;
 	private JTextField textMaskinTjenstNr;
@@ -140,6 +145,10 @@ public class NyKundPage extends JFrame {
 		butoms(MaskinPanel,TjänstPanel);
 		maskinpanellists(MaskinPanel);
 		tjänstpanellists(TjänstPanel);
+		
+		
+	
+		
 		
 		
 		
@@ -210,11 +219,6 @@ public class NyKundPage extends JFrame {
 	
 	private void textfelds()
 	{
-
-		textKundNamn = new JTextField();
-		textKundNamn.setBounds(80, 11, 86, 20);
-		contentPane.add(textKundNamn);
-		textKundNamn.setColumns(10);
 		
 		textKundNr = new JTextField();
 		textKundNr.setBounds(80, 42, 86, 20);
@@ -261,6 +265,34 @@ public class NyKundPage extends JFrame {
 		contentPane.add(textPrisTime);
 		textPrisTime.setColumns(10);
 		
+		
+		comboBoxForetag = new JComboBox();
+		comboBoxForetag.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hemtakundnr();
+			}
+
+			
+		});
+		comboBoxForetag.addPopupMenuListener(new PopupMenuListener() {
+			public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
+				hemtakund();
+			}
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {			
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				
+				
+			}
+		});
+		comboBoxForetag.setBounds(80, 11, 179, 20);
+		comboBoxForetag.setSelectedItem(null);
+		comboBoxForetag.setEditable(true);
+		contentPane.add(comboBoxForetag);
 	}
 
 	private void butoms(JPanel MaskinPanel, JPanel TjänstPanel) 
@@ -328,9 +360,10 @@ public class NyKundPage extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Maskinlist();
 				hemtatjenstlist();
+				
 			}
 		});
-		btnhemta.setBounds(176, 41, 89, 23);
+		btnhemta.setBounds(170, 41, 89, 23);
 		contentPane.add(btnhemta);
 		
 		JButton btnTaBortMaskin = new JButton("Ta bort Maskin");
@@ -401,25 +434,26 @@ public class NyKundPage extends JFrame {
 		btnTaBortTjanst.setBounds(652, 297, 120, 23);
 		contentPane.add(btnTaBortTjanst);
 		
+		JButton btnendraprocent = new JButton("\u00C4ndra % satser");
+		btnendraprocent.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				andraprocent();
+			}
+
+			
+		});
+		btnendraprocent.setBounds(528, 331, 120, 23);
+		contentPane.add(btnendraprocent);
+		
 	}
 
 	private void Spara()
 	{
-		String KundNamn = textKundNamn.getText();
+		String KundNamn = (String)comboBoxForetag.getSelectedItem();
+		System.out.println(KundNamn);
 		String KundNR = textKundNr.getText();
 		int kundnr = Integer.parseInt(KundNR);
-		db.NyKund(KundNamn, kundnr);
-		String MO = textFieldMO.getText();
-		String LO = textFieldLO.getText();
-		String Affo = textFieldAffo.getText();
-		String Vinst= textFieldAffo.getText();
-		int mo = Integer.parseInt(MO);
-		int lo = Integer.parseInt(LO);
-		int affo = Integer.parseInt(Affo);
-		int vinst = Integer.parseInt(Vinst);
-		db.Procent(kundnr, mo, lo, affo, vinst);
-		db.endraprocent(kundnr, mo,lo,affo,vinst);//fel sätt någon annnan stands
-		
+		db.NyKund(KundNamn,kundnr);
 	}
 
 	private void maskinpanellists(JPanel MaskinPanel)
@@ -581,8 +615,7 @@ public class NyKundPage extends JFrame {
 		db.Tjanstlista(listNRT, listTjanst, listPrisTid, kundnr);
 		
 	}
-	
-	
+		
 	private void veljnrm(int listselecter)
 	{
 		if(listselecter == 1)
@@ -599,7 +632,6 @@ public class NyKundPage extends JFrame {
 	
 	}
 
-
 	private void veljmaskin(int listselecter)
 	{
 		if(listselecter == 1)
@@ -615,7 +647,6 @@ public class NyKundPage extends JFrame {
         }
 	}
 	
-	
 	private void veljpris(int listselecter)
 	{
 		if(listselecter == 1)
@@ -630,8 +661,7 @@ public class NyKundPage extends JFrame {
         	listMaskin.setSelectedIndex(listPris.getSelectedIndex());
         }
 	}
-	
-	
+		
 	private void veljnrt(int listselecter) 
 	{
 		if(listselecter == 1)
@@ -675,6 +705,39 @@ public class NyKundPage extends JFrame {
         	listNRT.setSelectedIndex(listPrisTid.getSelectedIndex());
         	listTjanst.setSelectedIndex(listPrisTid.getSelectedIndex());
         }
+	}
+	
+	private void andraprocent() {
+		
+		String KundNR = textKundNr.getText();
+		int kundnr = Integer.parseInt(KundNR);
+		String MO = textFieldMO.getText();
+		String LO = textFieldLO.getText();
+		String Affo = textFieldAffo.getText();
+		String Vinst= textFieldAffo.getText();
+		int mo = Integer.parseInt(MO);
+		int lo = Integer.parseInt(LO);
+		int affo = Integer.parseInt(Affo);
+		int vinst = Integer.parseInt(Vinst);
+		db.endraprocent(kundnr, mo,lo,affo,vinst);//fel sätt någon annnan stands
+		
+		
+	}
+	
+	private void hemtakund() 
+	{
+		db.Hemtakund(comboBoxForetag);
+	}
+	
+	private void hemtakundnr() {
+		if (comboBoxForetag.getSelectedItem() != null) {
+            System.out.println(comboBoxForetag.getSelectedItem().toString());
+            String kund = comboBoxForetag.getSelectedItem().toString();
+            ////////////////////////////////////////////////////////////////////////// hämta kund nr
+            db.HemtaKundNR(kund, textKundNr);
+        }
+		
+		
 	}
 	
 	private static void test(String Excel,JPanel MaskinPanel,JPanel TjänstPanel,JTextField textKundNr )//JList listNRM 

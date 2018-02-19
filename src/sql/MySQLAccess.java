@@ -16,7 +16,10 @@ import javax.xml.soap.Text;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 
 
 
@@ -27,6 +30,7 @@ public class MySQLAccess {
 	private Statement statement = null;
 	private ResultSet resultSet = null;
 	private PreparedStatement preparedStatement = null;
+
 	
 	public void readDataBase() {
 		try {
@@ -41,11 +45,11 @@ public class MySQLAccess {
 			}
 		}
 	
-	public boolean NyKund(String NyKund, int kundnr)
+	public boolean NyKund(String NyKund, int kundnr)// 
 	{
 		try
 		{			
-			preparedStatement = connect.prepareStatement("insert into exjobb.kundlista values (?, ?)");
+			preparedStatement = connect.prepareStatement("insert into exjobb.kundlista values (?,?)");
 			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, NyKund);
 			preparedStatement.executeUpdate();
@@ -319,6 +323,39 @@ public class MySQLAccess {
 		}
 	}
 	
+	public void Hemtakund(JComboBox<String> comboBoxForetag) 
+	{
+		try
+		{
+			resultSet = statement.executeQuery("select * from exjobb.kundlista");
+			writecombo(resultSet, comboBoxForetag);
+		}
+		
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private void writecombo(ResultSet resultSet,JComboBox<String> comboBoxForetag) throws SQLException {
+	
+		DefaultComboBoxModel<String> Combox = new DefaultComboBoxModel<String>();
+		while (resultSet.next()) {
+			
+			String Företag = resultSet.getString("Kundnamn");
+			
+			Combox.addElement(Företag); 
+			
+		}
+		comboBoxForetag.setModel(Combox);
+	}
+	
+	public void HemtaKundNR(String kund, JTextField ID) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	private void close() 
 	{
 		try 
@@ -341,6 +378,8 @@ public class MySQLAccess {
 		{
 		}
 	}
+
+
 
 	
 	}
