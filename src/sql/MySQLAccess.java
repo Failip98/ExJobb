@@ -21,18 +21,15 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 
-
-
-
-
-public class MySQLAccess {
+	public class MySQLAccess 
+	{
 	private Connection connect = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
 	private PreparedStatement preparedStatement = null;
 
-	
-	public void readDataBase() {
+	public void readDataBase()
+	{
 		try {
 			connect = DriverManager.getConnection("jdbc:mysql://localhost/exjobb?user=root&password=1234");
 			
@@ -45,15 +42,14 @@ public class MySQLAccess {
 			}
 		}
 	
-	public boolean NyKund(String NyKund, int kundnr)// 
+	public boolean NyKund(String NyKund, int kundnr) 
 	{
 		try
 		{			
 			preparedStatement = connect.prepareStatement("insert into exjobb.kundlista values (?,?)");
 			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, NyKund);
-			preparedStatement.executeUpdate();
-			
+			preparedStatement.executeUpdate();			
 		}
 		catch (SQLException e)
 		{
@@ -92,7 +88,7 @@ public class MySQLAccess {
 		return true;
 	}
 	
-	public boolean nymaskin(int kundnr, int nr, String maskin, int pristime)
+	public boolean NewMaskin(int kundnr, int nr, String maskin, int pristime)
 	{
 		try
 		{	
@@ -115,7 +111,7 @@ public class MySQLAccess {
 		return true;
 	}
 	
-	public boolean nytjanst(int kundnr, int nr, String tjanst, int pristime) 
+	public boolean NewKonsult(int kundnr, int nr, String tjanst, int pristime) 
 	{
 		try
 		{	
@@ -137,16 +133,15 @@ public class MySQLAccess {
 		
 		return true;
 	}
-	
-	
-	public void Maskinlist(JList nr, JList maskin,JList pris, int kundnr)
+		
+	public void MaskinList(JList nr, JList maskin,JList pris, int kundnr)
 	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("select NR, Maskin,PrisTime from exjobb.prislistamaskin where ID=?");
 			preparedStatement.setInt(1, kundnr);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			writeMaskinList(resultSet, nr,maskin,pris);
+			WriteMaskinList(resultSet, nr,maskin,pris);
 		}
 		catch (SQLException e)
 		{
@@ -154,14 +149,14 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void Tjanstlista(JList nr, JList tjanst,JList pristime, int kundnr)
+	public void KonsultLista(JList nr, JList tjanst,JList pristime, int kundnr)
 	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("select NR, Tjänst,PrisTime from exjobb.prislistakonsult where ID=?");
 			preparedStatement.setInt(1, kundnr);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			writeTjanstList(resultSet, nr,tjanst,pristime);
+			WriteKonsultList(resultSet, nr,tjanst,pristime);
 		}
 		catch (SQLException e)
 		{
@@ -169,7 +164,7 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void writeMaskinList(ResultSet resultSet, JList nr, JList maskin , JList pris) throws SQLException {
+	public void WriteMaskinList(ResultSet resultSet, JList nr, JList maskin , JList pris) throws SQLException {
 		DefaultListModel<String> listNRM = new DefaultListModel<String>();
 		DefaultListModel<String> listMaskin = new DefaultListModel<String>();
 		DefaultListModel<String> listPris = new DefaultListModel<String>();
@@ -190,7 +185,7 @@ public class MySQLAccess {
 		
 	}
 	
-	private void writeTjanstList(ResultSet resultSet, JList nr, JList tjanst, JList pristime)throws SQLException {
+	public void WriteKonsultList(ResultSet resultSet, JList nr, JList tjanst, JList pristime)throws SQLException {
 		DefaultListModel<String> listNRT = new DefaultListModel<String>();
 		DefaultListModel<String> listTjanst = new DefaultListModel<String>();
 		DefaultListModel<String> listPrisTid = new DefaultListModel<String>();
@@ -211,7 +206,7 @@ public class MySQLAccess {
 
 	}
 	
-	public void getprosent(JTextField MO, JTextField LO, JTextField Affo,JTextField Vinst, int kundnr) 
+	public void GetProsent(JTextField MO, JTextField LO, JTextField Affo,JTextField Vinst, int kundnr) 
 	{
 		try
 		{
@@ -219,7 +214,8 @@ public class MySQLAccess {
 			preparedStatement.setInt(1, kundnr);
 			ResultSet resultSet = preparedStatement.executeQuery();
 			
-			while (resultSet.next()) {
+			while (resultSet.next()) 
+			{
 				
 				String mo = resultSet.getString("MO");
 				String lo = resultSet.getString("LO");
@@ -240,14 +236,15 @@ public class MySQLAccess {
 	
 	}
 	
-	public void endramaskin(int kundnr, String maskin, int pris)
+	public void ChangeMaskin(int kundnr, String maskin, int pris, int nr)
 	{
 		try
 		{
-			preparedStatement = connect.prepareStatement("Update exjobb.prislistamaskin SET Maskin = ?, PrisTime = ? WHERE ID= ?");
+			preparedStatement = connect.prepareStatement("Update exjobb.prislistamaskin SET Maskin = ?, PrisTime = ? WHERE ID= ? and NR = ?");
 			preparedStatement.setInt(3, kundnr);
 			preparedStatement.setString(1, maskin);
 			preparedStatement.setInt(2, pris);
+			preparedStatement.setInt(4, nr);
 			preparedStatement.executeUpdate();
 			
 		}
@@ -257,14 +254,15 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void endratjenst(int kundnr, String tjenst, int pris) 
+	public void ChangeKonsult(int kundnr, String tjenst, int pris, int nr) 
 	{
 		try
 		{
-			preparedStatement = connect.prepareStatement("Update exjobb.prislistakonsult SET Tjänst = ?, PrisTime = ? WHERE ID= ?");
+			preparedStatement = connect.prepareStatement("Update exjobb.prislistakonsult SET Tjänst = ?, PrisTime = ? WHERE ID= ? and NR = ?");
 			preparedStatement.setInt(3, kundnr);
 			preparedStatement.setString(1, tjenst);
 			preparedStatement.setInt(2, pris);
+			preparedStatement.setInt(4, nr);
 			preparedStatement.executeUpdate();
 			
 		}
@@ -274,7 +272,8 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void endraprocent(int kundnr, int mo, int lo, int affo, int vinst) {
+	public void ChangeProcent(int kundnr, int mo, int lo, int affo, int vinst)
+	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("Update exjobb.prosentlista SET MO = ?, LO = ?, Affo = ?, Vinst = ? WHERE ID= ?");
@@ -293,7 +292,7 @@ public class MySQLAccess {
 		
 	}
 	
-	public void tabortmaskin(String kundnr, String nr)
+	public void DeliteMaskin(String kundnr, String nr)
 	{
 		try
 		{
@@ -308,7 +307,7 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void taborttjenst(String kundnr, String nr)
+	public void DeliteKonsult(String kundnr, String nr)
 	{
 		try
 		{
@@ -323,36 +322,80 @@ public class MySQLAccess {
 		}
 	}
 	
-	public void Hemtakund(JComboBox<String> comboBoxForetag) 
+	public void RetriveKund(JComboBox<String> comboBoxForetag, int kundnr ) 
 	{
 		try
 		{
-			resultSet = statement.executeQuery("select * from exjobb.kundlista");
-			writecombo(resultSet, comboBoxForetag);
+			preparedStatement = connect.prepareStatement("select Kundnamn from exjobb.kundlista where ID = ?");
+			preparedStatement.setInt(1, kundnr);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			Test(resultSet, comboBoxForetag);	
 		}
-		
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
+	public void RetriveKundejnr(JComboBox<String> comboBoxForetag) {
+		try
+		{
+			resultSet = statement.executeQuery("select Kundnamn from exjobb.kundlista");
+			Test(resultSet, comboBoxForetag);
+				
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
 	
-	private void writecombo(ResultSet resultSet,JComboBox<String> comboBoxForetag) throws SQLException {
-	
+	public void Test(ResultSet resultSet,JComboBox<String> comboBoxForetag) throws SQLException
+	{
 		DefaultComboBoxModel<String> Combox = new DefaultComboBoxModel<String>();
-		while (resultSet.next()) {
-			
+		while (resultSet.next())
+		{	
 			String Företag = resultSet.getString("Kundnamn");
-			
-			Combox.addElement(Företag); 
-			
+			Combox.addElement(Företag); 	
 		}
 		comboBoxForetag.setModel(Combox);
 	}
 	
-	public void HemtaKundNR(String kund, JTextField ID) {
-		// TODO Auto-generated method stub
+	public void RetriveKundNr(String kund, JTextField ID) 
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("select ID from exjobb.kundlista where Kundnamn= ?");
+			preparedStatement.setString(1, kund);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) 
+			{
+				String id = resultSet.getString("ID");	
+				ID.setText(id);
+			}		
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void DeliteKund(String kund, String nr) 
+	{
+		try
+		{
+			preparedStatement = connect.prepareStatement("delete from exjobb.kundlista where (ID= ? and Kundnamn =?)");
+			preparedStatement.setString(1, nr);
+			preparedStatement.setString(2, kund);
+			preparedStatement.executeUpdate();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
@@ -379,7 +422,7 @@ public class MySQLAccess {
 		}
 	}
 
-
+	
 
 	
 	}
