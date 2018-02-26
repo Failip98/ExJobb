@@ -292,12 +292,12 @@ import javax.swing.JComboBox;
 		
 	}
 	
-	public void DeliteMaskin(String kundnr, String nr)
+	public void DeliteMaskin(int kundnr, String nr)
 	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("delete from exjobb.prislistamaskin where ID= ? and NR =?");
-			preparedStatement.setString(1, kundnr);
+			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, nr);
 			preparedStatement.executeUpdate();
 		}
@@ -307,12 +307,12 @@ import javax.swing.JComboBox;
 		}
 	}
 	
-	public void DeliteKonsult(String kundnr, String nr)
+	public void DeliteKonsult(int kundnr, String nr)
 	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("delete from exjobb.prislistakonsult where ID= ? and NR =?");
-			preparedStatement.setString(1, kundnr);
+			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, nr);
 			preparedStatement.executeUpdate();
 		}
@@ -382,12 +382,12 @@ import javax.swing.JComboBox;
 		
 	}
 	
-	public void DeliteKund(String kund, String nr) 
+	public void DeliteKund(String kund, int kundnr) 
 	{
 		try
 		{
 			preparedStatement = connect.prepareStatement("delete from exjobb.kundlista where (ID= ? and Kundnamn =?)");
-			preparedStatement.setString(1, nr);
+			preparedStatement.setInt(1, kundnr);
 			preparedStatement.setString(2, kund);
 			preparedStatement.executeUpdate();
 		}
