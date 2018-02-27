@@ -170,7 +170,7 @@ public class NyKundPage extends JFrame {
 		contentPane.add(lblVinst);
 		
 		JLabel lblNRM = new JLabel("Nummer");
-		lblNRM.setBounds(24, 99, 46, 14);
+		lblNRM.setBounds(24, 99, 50, 14);
 		contentPane.add(lblNRM);
 		
 		JLabel lblMaskin = new JLabel("Maskin");
@@ -182,7 +182,7 @@ public class NyKundPage extends JFrame {
 		contentPane.add(lblPris);
 		
 		JLabel lblNRK = new JLabel("Nummer");
-		lblNRK.setBounds(282, 99, 46, 14);
+		lblNRK.setBounds(282, 99, 50, 14);
 		contentPane.add(lblNRK);
 		
 		JLabel lblKonsult = new JLabel("Konsult");
@@ -202,7 +202,7 @@ public class NyKundPage extends JFrame {
 		contentPane.add(lblKundNr);	
 		
 		JLabel lbllegtillNr = new JLabel("Nummer");
-		lbllegtillNr.setBounds(528, 138, 46, 14);
+		lbllegtillNr.setBounds(528, 138, 50, 14);
 		contentPane.add(lbllegtillNr);
 		
 		JLabel lbllegtillMaskintjenst = new JLabel("Maskin/Konsult");
@@ -338,6 +338,7 @@ public class NyKundPage extends JFrame {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 				NewMaskin();
+				RetriveMaskintList();
 				CleanText();
 			}
 		});
@@ -350,6 +351,7 @@ public class NyKundPage extends JFrame {
 			public void mouseClicked(MouseEvent arg0) 
 			{
 				NewKonsult();
+				RetriveKonsultList();
 				CleanText();
 			}
 		});
@@ -418,7 +420,6 @@ public class NyKundPage extends JFrame {
 				CleanText();
 				RetriveKonsultList();
 			}
-
 		});
 		btnDeliteKonsult.setBounds(652, 297, 120, 23);
 		contentPane.add(btnDeliteKonsult);
@@ -443,8 +444,6 @@ public class NyKundPage extends JFrame {
 				p.setVisible(true);
 		        
 			}
-
-			
 		});
 		btnDeliteKund.setBounds(269, 41, 120, 23);
 		contentPane.add(btnDeliteKund);
@@ -454,9 +453,10 @@ public class NyKundPage extends JFrame {
 	{
 		String KundNamn = (String)comboBoxForetag.getSelectedItem();
 		String KundNR = textKundNr.getText(); 
-		if ( KundNamn == null || KundNR == null)
+		if (KundNamn == null || textKundNr.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte lägga till företaget.");
+			
         }
 		else 
 		{
@@ -573,6 +573,7 @@ public class NyKundPage extends JFrame {
 		TjänstPanel.add(listPrisTid);
 	}
 	
+
 	private void CleanText()
 	{
 		textMaskinKonsultNr.setText(null);
@@ -580,51 +581,71 @@ public class NyKundPage extends JFrame {
 		textPrisTime.setText(null);
 	}
 	
-	private void CleanTextProcent()
-	{
-		textFieldMO.setText(null);
-		textFieldLO.setText(null);
-		textFieldAffo.setText(null);
-		textFieldVinst.setText(null);
-	}
-	
-	private void CleanNr()
-	{
-		textKundNr.setText(null);
-	}
-	
-	private void CleanList() // se om behövs
-	{
-		// TODO Auto-generated method stub
-		//listNRM.clear()
-	}
-	
-	private void CleanCombobox() // se om behövs 
-	{
-		// TODO Auto-generated method stub
-		//comboBoxForetag.
-	}
-	
-	private void RetriveProcent()
-	{
-		String KundNR = textKundNr.getText();
-		int kundnr = Integer.parseInt(KundNR);
-		db.GetProsent(textFieldMO,textFieldLO,textFieldAffo,textFieldVinst,kundnr);	
-	}
 	
 	private void RetriveMaskintList()
 	{
-		String KundNR = textKundNr.getText();
-		int kundnr = Integer.parseInt(KundNR);	
-		db.MaskinList(listNRM,listMaskin,listPris,kundnr);
-		
+		if (comboBoxForetag.getSelectedItem() != null)
+		{
+            String KundNamn = comboBoxForetag.getSelectedItem().toString();
+            String KundNR = textKundNr.getText();
+            if(KundNamn == null || textKundNr.getText().equals(""))
+    		{
+    			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+    		}
+    		else 
+    		{
+    			int kundnr = Integer.parseInt(KundNR);	
+    			db.MaskinList(listNRM,listMaskin,listPris,kundnr);  
+    		} 
+        }
+		else
+		{
+			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+		}
 	}
 	
 	private void RetriveKonsultList()
 	{
-		String KundNR = textKundNr.getText();
-		int kundnr = Integer.parseInt(KundNR);
-		db.KonsultLista(listNRT, listKonsult, listPrisTid, kundnr);
+		if (comboBoxForetag.getSelectedItem() != null)
+		{
+            String KundNamn = comboBoxForetag.getSelectedItem().toString();
+            String KundNR = textKundNr.getText();
+            if(KundNamn == null || textKundNr.getText().equals(""))
+    		{
+    			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+    		}
+    		else 
+    		{
+    			int kundnr = Integer.parseInt(KundNR);
+    			db.KonsultLista(listNRT, listKonsult, listPrisTid, kundnr); 
+    		} 
+        }
+		else
+		{
+			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+		}
+	}
+	
+	private void RetriveProcent()
+	{
+		if (comboBoxForetag.getSelectedItem() != null)
+		{
+            String KundNamn = comboBoxForetag.getSelectedItem().toString();
+            String KundNR = textKundNr.getText();
+            if(KundNamn == null || textKundNr.getText().equals(""))
+    		{
+    			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+    		}
+    		else 
+    		{	
+    			int kundnr = Integer.parseInt(KundNR);
+    			db.GetProsent(textFieldMO,textFieldLO,textFieldAffo,textFieldVinst,kundnr);	
+    		} 
+        }
+		else
+		{
+			JOptionPane.showMessageDialog(frame,"Kunde inte hämta lisat.");
+		}
 	}
 	
 	private void RetriveKund() 
@@ -651,13 +672,14 @@ public class NyKundPage extends JFrame {
         }	
 	}
 
+	
 	private void NewMaskin()
 	{
 		String KundNR = textKundNr.getText();
 		String NR = textMaskinKonsultNr.getText();
 		String MaskinTjenst = textMaskinKonsult.getText();
 		String PrisTime = textPrisTime.getText();
-	    if(KundNR == null || NR == null ||  MaskinTjenst == null ||  PrisTime == null)
+	    if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals("") ||  textMaskinKonsult.getText().equals("") ||  textPrisTime.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte lägga till maskinen.");
 		}
@@ -667,7 +689,6 @@ public class NyKundPage extends JFrame {
 			int nr = Integer.parseInt(NR);
 			int pristime = Integer.parseInt(PrisTime);
 			db.NewMaskin(kundnr, nr, MaskinTjenst, pristime);
-			db.MaskinList(listNRM, listMaskin, listPris, kundnr);
 		} 
 	}
 		
@@ -677,7 +698,7 @@ public class NyKundPage extends JFrame {
 		String NR = textMaskinKonsultNr.getText();
 		String MaskinTjenst = textMaskinKonsult.getText();
 		String PrisTime = textPrisTime.getText();
-		if(KundNR == null || NR == null ||  MaskinTjenst == null ||  PrisTime == null)
+		if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals("") ||  textMaskinKonsult.getText().equals("") ||  textPrisTime.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte lägga till tjänsten.");
 		}
@@ -687,10 +708,10 @@ public class NyKundPage extends JFrame {
 			int nr = Integer.parseInt(NR);
 			int pristime = Integer.parseInt(PrisTime);
 			db.NewKonsult(kundnr, nr, MaskinTjenst, pristime);
-			db.KonsultLista(listNRT, listKonsult, listPrisTid, kundnr);
 		} 	
 	}
-		
+
+	
 	private void SelectNrTM(int listselecter)
 	{
 		if(listselecter == 1)
@@ -786,10 +807,10 @@ public class NyKundPage extends JFrame {
 	private void ChangeMaskin() 
 	{
 		String KundNR = textKundNr.getText();
+		String NR = textMaskinKonsultNr.getText();
 		String Maskin = textMaskinKonsult.getText();
 		String Pris = textPrisTime.getText();
-		String NR = textMaskinKonsultNr.getText();
-		if(KundNR == null || NR == null ||  Maskin == null ||  Pris == null)
+		if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals("") ||  textMaskinKonsult.getText().equals("") ||  textPrisTime.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte ändra maskinen.");
 		}
@@ -805,10 +826,10 @@ public class NyKundPage extends JFrame {
 	private void ChangeKonsult() 
 	{
 		String KundNR = textKundNr.getText();
+		String NR = textMaskinKonsultNr.getText();
 		String Tjanst = textMaskinKonsult.getText();
 		String Pris = textPrisTime.getText();
-		String NR = textMaskinKonsultNr.getText();
-		if(KundNR == null || NR == null ||  Tjanst == null ||  Pris == null)
+		if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals("") ||  textMaskinKonsult.getText().equals("") ||  textPrisTime.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte ändra tjänsten.");
 		}
@@ -828,7 +849,7 @@ public class NyKundPage extends JFrame {
 		String LO = textFieldLO.getText();
 		String Affo = textFieldAffo.getText();
 		String Vinst= textFieldVinst.getText();
-		if(KundNR == null || MO == null ||  LO == null ||  Affo == null ||  Vinst == null)
+		if(textKundNr.getText().equals("") || textFieldMO.getText().equals("") ||  textFieldLO.getText().equals("") ||  textFieldAffo.getText().equals("") ||  textFieldVinst.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte ändra procent.");
 		}
@@ -848,26 +869,29 @@ public class NyKundPage extends JFrame {
 	{
 		if (comboBoxForetag.getSelectedItem() != null)
 		{
-            String kund = comboBoxForetag.getSelectedItem().toString();
+            String KundNamn = comboBoxForetag.getSelectedItem().toString();
             String KundNR = textKundNr.getText();
-            if(kund == null || KundNR == null)
+            if(KundNamn == null || textKundNr.getText().equals(""))
     		{
     			JOptionPane.showMessageDialog(frame,"Kunde inte tabort företaget.");
     		}
     		else 
     		{
     			int kundnr = Integer.parseInt(KundNR);		
-    			db.DeliteKund(kund, kundnr);  
+    			db.DeliteKund(KundNamn, kundnr);  
     		} 
         }
+		else
+		{
+			JOptionPane.showMessageDialog(frame,"Kunde inte tabort företaget.");
+		}
 	}
 	
-
 	private void DeliteMaskin()
 	{
 		String KundNR = textKundNr.getText();
 		String NR = textMaskinKonsultNr.getText();
-		if(KundNR == null || NR == null)
+		if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde inte tabort maskinen.");
 		}
@@ -878,28 +902,27 @@ public class NyKundPage extends JFrame {
 		} 
 	}
 
-
 	private void DeliteKonsult()
 	{
 		String KundNR = textKundNr.getText();
 		String NR = textMaskinKonsultNr.getText();
-		if(KundNR == null || NR == null)
+		if(textKundNr.getText().equals("") || textMaskinKonsultNr.getText().equals(""))
 		{
-			JOptionPane.showMessageDialog(frame,"Kunde inte tabort Tjänsten.");
+			JOptionPane.showMessageDialog(frame,"Kunde inte tabort tjänsten.");
 		}
 		else 
 		{	
-			int kundnr = Integer.parseInt(KundNR);	
+			int kundnr = Integer.parseInt(KundNR);
 			db.DeliteKonsult(kundnr,NR);
 		} 
-		
 	}
+
 	
 	private void Reader() 
 	{
 		String Excel = textExcel.getText();
 		listNRM.getSelectedValue();
-		if(Excel == null)
+		if(textExcel.getText().equals("") )
 		{
 			JOptionPane.showMessageDialog(frame,"Kunde lässa in fillen.");
 		}
@@ -931,9 +954,7 @@ public class NyKundPage extends JFrame {
                     if (currentCell.getCellTypeEnum() == CellType.STRING) 
                     {
                         System.out.print(currentCell.getStringCellValue() + "\t");
-                        //String[] myStringArray = {currentCell.getStringCellValue()};
-                        //System.out.println(myStringArray);
-                        //String ert = currentCell.getStringCellValue();
+                      
                     }
                     else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) 
                     {
