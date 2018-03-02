@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
@@ -8,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import sql.MySQLAccess;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -25,6 +28,9 @@ import java.awt.TextField;
 import java.util.Date;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class NyOderPage extends JFrame 
 {
@@ -32,7 +38,13 @@ public class NyOderPage extends JFrame
 	private JPanel contentPane;
 	private JFrame frame;
 	
-	String start = "0";
+	
+	String startWalue = "0";
+	String startAmount = "1";
+	String startMo = "10";
+	String startLo = "25";
+	String startAffo = "20";
+	String startVinst = "25";
 	
 	JPanel panelMaskin;
 	JPanel panelMattrial;
@@ -53,6 +65,14 @@ public class NyOderPage extends JFrame
 	JList listMaterialVinst;
 	JList listMaterialPris;
 	
+	DefaultListModel<String> MaterialMaterial = new DefaultListModel<String>();
+	DefaultListModel<String> MaterialPrisMaterialUnit = new DefaultListModel<String>();
+	DefaultListModel<String> MatirialAmount = new DefaultListModel<String>();
+	DefaultListModel<String> MaterialMo = new DefaultListModel<String>();
+	DefaultListModel<String> MaterialAffo = new DefaultListModel<String>();
+	DefaultListModel<String> MaterialVinst = new DefaultListModel<String>();
+	DefaultListModel<String> MaterialPris = new DefaultListModel<String>();
+	
 	JList listYourThing;
 	JList listYourPrepareTime;
 	JList listYourUnit;
@@ -70,7 +90,7 @@ public class NyOderPage extends JFrame
 	JComboBox comboBoxMachine;
 	JComboBox comboBoxNummber;
 	
-	static MySQLAccess db = new MySQLAccess();
+	
 	
 	private static JTextField textFieldDatum;
 	private JTextField textProduce;
@@ -116,15 +136,7 @@ public class NyOderPage extends JFrame
 	public NyOderPage() 
 	{
 		initialize();
-		try 
-		{
-			db.readDataBase();
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	
+		
 	}
 
 
@@ -189,24 +201,122 @@ public class NyOderPage extends JFrame
 	private void panelMatrialLists()
 	{
 		listMaterialMaterial = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMatrialMatrial();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialMaterial);
 		
 		listMaterialPrisMaterialUnit = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMatirialAmount();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialPrisMaterialUnit);
 		
 		listMatirialAmount = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMaterialPrisMaterialUnit();
+				}	
+			}
+		});
 		panelMattrial.add(listMatirialAmount);
 		
 		listMaterialMo = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMaterialMo();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialMo);
 		
 		listMaterialAffo = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMaterialAffo();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialAffo);
 		
 		listMaterialVinst = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMaterialVinst();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialVinst);
 		
 		listMaterialPris = new JList();
+		listMaterialMaterial.addListSelectionListener(new ListSelectionListener()
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{
+				if (listMaterialMaterial.getSelectedIndex() == -1)
+				{
+			        //inget händer
+				}
+				else
+				{
+					SelectMaterialPris();
+				}	
+			}
+		});
 		panelMattrial.add(listMaterialPris);
 	}
 	
@@ -266,8 +376,8 @@ public class NyOderPage extends JFrame
 			public void mouseClicked(MouseEvent e) 
 			{
 				setDate();
-				setProcent();
-				w();
+				setStartProcentWalue();
+				setStarWalue();
 			}
 		});
 		btnImport.setBounds(995, 38, 89, 23);
@@ -286,6 +396,16 @@ public class NyOderPage extends JFrame
 		contentPane.add(btnAddMachine);
 		
 		JButton btnAddMaterel = new JButton("L\u00E4ggtill");
+		btnAddMaterel.addMouseListener(new MouseAdapter() 
+		{
+			
+			int listItem = 0;
+			public void mouseClicked(MouseEvent e)
+			{
+				listItem++;
+				AddMaterial(listItem);
+			}
+		});
 		btnAddMaterel.setBounds(66, 199, 89, 23);
 		contentPane.add(btnAddMaterel);
 
@@ -620,13 +740,23 @@ public class NyOderPage extends JFrame
 	{
 		comboBoxMachine = new JComboBox();
 		comboBoxMachine.setBounds(204, 82, 120, 20);
+		comboBoxMachine.setSelectedItem(null);
 		comboBoxMachine.setEditable(true);
 		contentPane.add(comboBoxMachine);
 		
 		comboBoxNummber = new JComboBox();
 		comboBoxNummber.setBounds(60, 82, 55, 20);
+		comboBoxNummber.setSelectedItem(null);
 		comboBoxNummber.setEditable(true);
 		contentPane.add(comboBoxNummber);
+		
+		JButton btnDeliteMaterial = new JButton("Ta Bort");
+		btnDeliteMaterial.setBounds(165, 199, 89, 23);
+		contentPane.add(btnDeliteMaterial);
+		
+		JButton btnDeliteYourCost = new JButton("Ta Bort");
+		btnDeliteYourCost.setBounds(203, 320, 89, 23);
+		contentPane.add(btnDeliteYourCost);
 	}
 
 	private static void setDate() 
@@ -638,30 +768,129 @@ public class NyOderPage extends JFrame
 		
 	 }
 	
-	private void setProcent()
+	private void setStartProcentWalue()
 	{
-		textMo.setText("10");
-		textLo.setText("15");
-		textAffo.setText("20");
-		textVinst.setText("25");
+		textMo.setText(startMo);
+		textLo.setText(startLo);
+		textAffo.setText(startAffo);
+		textVinst.setText(startVinst);
 	}
 
-	private void w()
-	//TODO
+	private void setStarWalue()
 	{
-		textAmount.setText(start);
-		textTotalMachineCost.setText(start);
-		textTotalMaterialCost.setText(start);
-		textYourTotalCost.setText(start);
-		textTotalPrepareTime.setText(start);
-		textTotalMachineTime.setText(start);
-		textTotalTime.setText(start);
-		textShippingCost.setText(start);
-		textOverTime.setText(start);
-		textOverProcent.setText(start);
+		textAmount.setText(startAmount);
+		textTotalMachineCost.setText(startWalue);
+		textTotalMaterialCost.setText(startWalue);
+		textYourTotalCost.setText(startWalue);
+		textTotalPrepareTime.setText(startWalue);
+		textTotalMachineTime.setText(startWalue);
+		textTotalTime.setText(startWalue);
+		textShippingCost.setText(startWalue);
+		textOverTime.setText(startWalue);
+		textOverProcent.setText(startWalue);
+		textTotalAmount.setText(startWalue);
+		textFieldUnitAmaunt.setText(startWalue);
+	}
+	
+	private void AddMaterial( int listItem)
+	{
+		MaterialMaterial.addElement("Matrial"+listItem);
+		MaterialPrisMaterialUnit.addElement(startWalue);
+		MatirialAmount.addElement(startWalue);
+		MaterialMo.addElement(startMo);
+		MaterialAffo.addElement(startAffo);
+		MaterialVinst.addElement(startVinst);
+		MaterialPris.addElement(startWalue);
+		
+		
+		listMaterialMaterial.setModel(MaterialMaterial);	
+		listMaterialPrisMaterialUnit.setModel(MaterialPrisMaterialUnit);
+		listMatirialAmount.setModel(MatirialAmount);
+		listMaterialMo.setModel(MaterialMo);
+		listMaterialAffo.setModel(MaterialAffo);
+		listMaterialVinst.setModel(MaterialVinst);
+		listMaterialPris.setModel(MaterialPris);
 	}
 
-
-
+	
+	
+	
+	private void SelectMatrialMatrial()
+	{
+		listMatirialAmount.setSelectedIndex(listMaterialMaterial.getSelectedIndex());
+    	listMaterialPrisMaterialUnit.setSelectedIndex(listMaterialMaterial.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMaterialMaterial.getSelectedIndex());	
+    	listMaterialAffo.setSelectedIndex(listMaterialMaterial.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMaterialMaterial.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMaterialMaterial.getSelectedIndex());		
+	}
+	
+	private void SelectMatirialAmount()
+	{
+		listMaterialMaterial.setSelectedIndex(listMatirialAmount.getSelectedIndex());
+    	listMaterialPrisMaterialUnit.setSelectedIndex(listMatirialAmount.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMatirialAmount.getSelectedIndex());	
+    	listMaterialAffo.setSelectedIndex(listMatirialAmount.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMatirialAmount.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMatirialAmount.getSelectedIndex());	  	
+	}
+	
+	private void SelectMaterialPrisMaterialUnit()
+	{
+		
+		listMaterialMaterial.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());
+		listMatirialAmount.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());	
+    	listMaterialAffo.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMaterialPrisMaterialUnit.getSelectedIndex());	  	
+	}
+	
+	private void SelectMaterialMo()
+	{
+		listMaterialMaterial.setSelectedIndex(listMaterialMo.getSelectedIndex());
+		listMatirialAmount.setSelectedIndex(listMaterialMo.getSelectedIndex());	
+		listMaterialPrisMaterialUnit.setSelectedIndex(listMaterialMo.getSelectedIndex());	
+    	listMaterialAffo.setSelectedIndex(listMaterialMo.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMaterialMo.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMaterialMo.getSelectedIndex());	  	
+	}
+	
+	private void SelectMaterialAffo()
+	{
+		listMaterialMaterial.setSelectedIndex(listMaterialAffo.getSelectedIndex());
+		listMatirialAmount.setSelectedIndex(listMaterialAffo.getSelectedIndex());	
+		listMaterialPrisMaterialUnit.setSelectedIndex(listMaterialAffo.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMaterialAffo.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMaterialAffo.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMaterialAffo.getSelectedIndex());	  	
+	}
+	
+	private void SelectMaterialVinst()
+	{
+		listMaterialMaterial.setSelectedIndex(listMaterialVinst.getSelectedIndex());
+		listMatirialAmount.setSelectedIndex(listMaterialVinst.getSelectedIndex());	
+		listMaterialPrisMaterialUnit.setSelectedIndex(listMaterialVinst.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMaterialVinst.getSelectedIndex());
+    	listMaterialAffo.setSelectedIndex(listMaterialVinst.getSelectedIndex());
+    	listMaterialPris.setSelectedIndex(listMaterialVinst.getSelectedIndex());	  	
+	}
+	
+	private void SelectMaterialPris()
+	{
+		listMaterialMaterial.setSelectedIndex(listMaterialPris.getSelectedIndex());
+		listMatirialAmount.setSelectedIndex(listMaterialPris.getSelectedIndex());	
+		listMaterialPrisMaterialUnit.setSelectedIndex(listMaterialPris.getSelectedIndex());	
+    	listMaterialMo.setSelectedIndex(listMaterialPris.getSelectedIndex());
+    	listMaterialAffo.setSelectedIndex(listMaterialPris.getSelectedIndex());
+    	listMaterialVinst.setSelectedIndex(listMaterialPris.getSelectedIndex());	  	
+	}
+	
+	
+	
+	
+	
+	
+	
 
 }
